@@ -12,6 +12,7 @@ import sys
 
 PATH = '/var/log/cron.log'  # Path to CRON log
 INTERESTING_USERS = ['colin']  # List of users to monitor
+PRINT_LINES = 2  # Number of lines to print
 
 # Max length of the output string
 try:
@@ -57,30 +58,31 @@ for line in cleaned:
         time_out = dt.strftime('%a %H:%M')  # Print as Dow HH:MM (Wed, 03:01)
         out.append('{0} - {1}'.format(time_out, path[-1]))
     except ValueError:
-        next()
+        out.append('???')
 
-out.reverse()
+out.reverse()  # So newest entries are first
 
-# Print as many entries as possible so that the string is less than 75 characters
-# Don't truncate the string, though!
-i = 0
-while len(" | ".join(out[0:i])) < MAXLEN:
-    line_one = out[0:i]
-    i += 1
-    if i > len(out):
-        break
 
-j = i
-while len(" | ".join(out[i:j])) < MAXLEN:
-    line_two = out[i:j]
-    j += 1
-    if i > len(out):
-        break
+lines = [[] for i in range(0, PRINT_LINES)]
+i = j = 0
 
-pad_width = max(len(line_one[0]), len(line_two[0]))
+# For each line, find the number of entries that can be printed without surpassing MAXLEN characters
+for k in range(0, PRINT_LINES):
+    while len(" | ".join(out[i:(j+1)])) < MAXLEN:
+        j += 1
+        lines[k] = out[i:j]
+        if j > len(out):
+            break
+    i = j
 
-line_one = [x.ljust(pad_width) for x in line_one]
-line_two = [x.ljust(pad_width) for x in line_two]
 
-print("  " + " | ".join(line_one))
-print("  " + " | ".join(line_two))
+# Determine column width for padding
+col_count = max([len(line) for line in lines])
+col_widths = [max([len(lines[row][col]) for row in range(0, len(lines))])
+                                        for col in range(col_count)]
+
+# Pad each column and then print it
+for line in lines:
+    for i in range(0, len(line)):
+        line[i] = line[i].ljust(col_widths[i])
+    print("  " + " | ".join(line))
