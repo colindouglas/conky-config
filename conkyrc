@@ -106,9 +106,9 @@ ${color orange}${voffset 2}${hr 1}
 #------------+
 # Network    |
 #------------+
-${color}${goto 5}today ${goto 100}yesterday ${goto 225}week ${goto 325}month ${color green}
+${color}${goto 5}today ${goto 110}yesterday ${goto 220}${execi 300 date +%B | awk '{print tolower($0)}'}${goto 323}${execi 300 date --date="$(date +%Y-%m-15) -1 month" +%B | awk '{print tolower($0)}'}${color green}
 # vnstatd updates database every five minutes
-${execi 300 vnstat -i enp3s0 | grep "today" | awk '{print $8" "substr ($9, 1, 1)}'} ${goto 110}${execi 300 vnstat -i enp3s0 | grep "yesterday" | awk '{print $8" "substr ($9, 1, 1)}'} ${goto 220}${execi 300 vnstat -i enp3s0 -w | grep "current week" | awk '{print $9" "substr ($10, 1, 1)}'} ${goto 315}${execi 300 vnstat -i enp3s0 -m | grep "`date +"%b '%y"`" | awk '{print $9" "substr ($10, 1, 1)}'}
+${execi 300 vnstat -i enp3s0 -s | awk 'NR==7 {print $8, $9}'} ${goto 110}${execi 300 vnstat -i enp3s0 -s | awk 'NR==6 {print $8, $9}'} ${goto 220}${execi 300 vnstat -i enp3s0 -s | awk 'NR==5 {print $8, $9}'} ${goto 315}${execi 300 vnstat -i enp3s0 -s | awk 'NR==4 {print $8, $9}'}
 ${color}down: ${color green}${downspeed enp3s0}/s ${color}${goto 220}up: ${color green}${upspeed enp3s0}/s
 ${downspeedgraph enp3s0 25,190 000000 00ff00} ${alignr}${upspeedgraph enp3s0 25,190 000000 00ff00}$color
 total: ${color green}${totaldown enp3s0} $color${alignr}total: ${color green}${totalup enp3s0}
