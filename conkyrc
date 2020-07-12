@@ -106,7 +106,7 @@ ${color orange}${voffset 2}${hr 1}
 #------------+
 # Network    |
 #------------+
-${color}${goto 5}today ${goto 110}yesterday ${goto 220}${execi 300 date +%B | awk '{print tolower($0)}'}${goto 323}${execi 300 date --date="$(date +%Y-%m-15) -1 month" +%B | awk '{print tolower($0)}'}${color green}
+${color}${goto 5}today ${goto 110}yesterday ${goto 220}${execi 300 date +%B | awk '{print tolower($0)}'}${goto 315}${execi 300 date --date="$(date +%Y-%m-15) -1 month" +%B | awk '{print tolower($0)}'}${color green}
 # vnstatd updates database every five minutes
 ${execi 300 vnstat -i enp3s0 -s | awk 'NR==7 {print $8, $9}'} ${goto 110}${execi 300 vnstat -i enp3s0 -s | awk 'NR==6 {print $8, $9}'} ${goto 220}${execi 300 vnstat -i enp3s0 -s | awk 'NR==5 {print $8, $9}'} ${goto 315}${execi 300 vnstat -i enp3s0 -s | awk 'NR==4 {print $8, $9}'}
 ${color}down: ${color green}${downspeed enp3s0}/s ${color}${goto 220}up: ${color green}${upspeed enp3s0}/s

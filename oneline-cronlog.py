@@ -62,7 +62,6 @@ for line in cleaned:
 
 out.reverse()  # So newest entries are first
 
-
 lines = [[] for i in range(0, PRINT_LINES)]
 i = j = 0
 
@@ -76,8 +75,17 @@ for k in range(0, PRINT_LINES):
     i = j
 
 
-# Determine column width for padding
+
+
+# Figure out the number of columns
 col_count = max([len(line) for line in lines])
+
+# Append extra entries just in case the logs have recently been cycled
+for line in lines:
+    while len(line) < col_count:
+        line.append('(log cycled)')
+
+# Calculate the appropriate width for each column
 col_widths = [max([len(lines[row][col]) for row in range(0, len(lines))])
                                         for col in range(col_count)]
 
